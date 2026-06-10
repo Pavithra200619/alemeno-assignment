@@ -1,0 +1,19 @@
+3-Minute Technical Video Script
+
+0:00 - 0:20 Introduction
+Hi, I am Pavithra. This is my backend assignment for the AI-powered transaction processing pipeline. The system accepts a dirty transaction CSV, processes it asynchronously, detects anomalies, classifies missing categories, and returns a structured report through APIs.
+
+0:20 - 1:10 System Design and Data Flow
+The architecture has four services running through Docker Compose: FastAPI, PostgreSQL, Redis, and Celery worker. When the user uploads a CSV to POST /jobs/upload, FastAPI creates a Job record in PostgreSQL with pending status and pushes the processing task to Redis. The Celery worker dequeues it, changes the status to processing, reads the CSV, cleans the data, detects anomalies, classifies missing categories, generates a summary, stores everything in PostgreSQL, and marks the job as completed. The user can poll /jobs/{id}/status and fetch final results from /jobs/{id}/results.
+
+1:10 - 1:40 Why These Choices
+I used FastAPI because it is lightweight and provides automatic Swagger documentation. PostgreSQL is used because the data is relational: one job has many transactions and one summary. Redis and Celery are used so CSV processing does not block the API request. Pandas is used for reliable CSV cleaning and aggregation. Gemini is optional, and if no API key is provided, the system uses a rule-based fallback so the application still runs during evaluation.
+
+1:40 - 2:30 Bottlenecks and Breaking Point
+If traffic grows by 100x, the first breaking points would be database connections, Celery worker capacity, Redis queue size, file storage, and LLM rate limits. Large CSV files may also increase memory usage because Pandas loads data into memory. Too many parallel LLM calls could also hit quota limits.
+
+2:30 - 2:55 Next Iteration
+For production scale, I would add multiple API and worker replicas, cloud object storage for files, batch database inserts, proper connection pooling, monitoring, request tracing, dead-letter queues, and rate-limited batched LLM calls. For very large files, I would process CSVs in chunks instead of loading the full file into memory.
+
+2:55 - 3:00 Closing
+This completes the architecture and implementation overview. Thank you.
