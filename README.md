@@ -139,3 +139,7 @@ Stores total spend by currency, top merchants, anomaly count, narrative, and ris
 ## Scaling Discussion
 
 The current implementation works well for small CSV files and internship-level evaluation. At 100x traffic, the main breaking points would be database connection limits, Celery worker capacity, Redis queue pressure, file storage, and LLM rate limits. In production, I would add horizontal API scaling, multiple Celery worker replicas, cloud object storage for uploaded files, connection pooling, batch database inserts, rate-limited LLM batching, observability, and retries with a dead-letter queue.
+
+## Architecture Diagram
+
+![Architecture](alemen.png)
